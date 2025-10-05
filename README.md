@@ -1,0 +1,3 @@
+IMPORTANT:
+FOR THIS CODE TO WORK PROPERLY YOU NEED TO ADD THE TWO FILES FROM: https://drive.google.com/drive/folders/1ChGu95-FVk0xHKM-U7A5INlRoXKQxRcI?usp=sharing TO THE STATIC FOLDER
+We developed an interactive 3D asteroid impact simulator that uses real data from NASA’s public APIs to model the potential consequences of near-Earth objects. The platform calculates critical parameters such as impact energy, crater size, shock waves, wildfires, probability of collision, and estimated casualties. Using Flask for backend data processing and Cesium for immersive geospatial visualization, users can explore realistic scenarios anywhere in the world and understand the potential scale of an asteroid impact.
