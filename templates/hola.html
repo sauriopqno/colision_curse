@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Collision Course</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #7fabd4, #0e3d6e, #1d1c42);
+            color: #f0f0f0;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(90, 124, 193, 0);
+           
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-top: 0;
+        }
+
+        #globe-container {
+            width: 100%;
+            max-width: 300px;
+            aspect-ratio: 1 / 1; /* Esta propiedad fuerza que sea cuadrado */
+            margin: 30px auto;
+            cursor: pointer;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        section {
+            background: #5075BF;
+            padding: 20px;
+            border-radius: 10px;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        ul {
+            margin-left: 20px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.9rem;
+            padding: 15px;
+            margin-top: 30px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        #try-container {
+            text-align: center;
+            margin: 20px auto 10px auto; 
+            padding: 15px 30px;
+            background: #a7d5f200; 
+            border-radius: 12px;
+            display: inline-block; 
+            transition: transform 0.3s, background 0.3s;
+            cursor: pointer;
+        }
+
+        #try-container h2 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚀 Welcome to Collision Course!</h1>
+    </header>
+
+    <!-- Botón TRY IT -->
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div id="try-container">
+            <h2>TRY IT</h2>
+        </div>
+    </div>
+
+    <!-- Globo 3D -->
+    <div id="globe-container" title="Click to explore the simulation"></div>
+
+    <main>
+        <h2>How it Works?</h2>
+        <section>
+            <p>We developed an interactive application that integrates and analyzes information from NASA's public APIs related to Near-Earth objects.</p>
+            <p>The main objective of this system is to calculate and visualize the potential damage caused by meteorites posing an impact risk, considering parameters such as:</p>
+            <ul>
+                <li>Mass (kg)</li>
+                <li>Diameter (km)</li>
+                <li>Relative velocity to Earth (km/s)</li>
+            </ul>
+            <p>For the model's development, we used <strong>Flask</strong>, a lightweight Python framework, to:</p>
+            <ul>
+                <li>Process data</li>
+                <li>Perform the necessary calculations</li>
+                <li>Manage communication between the backend and the visualization interface</li>
+            </ul>
+            <p>We implemented <strong>Cesium</strong>, a powerful 3D geospatial visualization library, to realistically represent:</p>
+            <ul>
+                <li>Impact trajectories</li>
+                <li>Affected zones</li>
+                <li>Estimated population damage</li>
+            </ul>
+            <p>The result is an interactive simulation tool that combines real scientific data with immersive visualization, helping users:</p>
+            <ul>
+                <li>Understand impact risks</li>
+                <li>Analyze possible planetary defense strategies</li>
+              </ul>
+            <p>For all the calculations used in this program, we used NASA's publicly accessible APIs (SBDB, SENTRY, and SEDAC). To calculate the crater diameter, we used a constant for the ground (0.7), the kinetic energy of the asteroid—which we obtained from the SENTRY API, which provided the energy in megatons—and the ground density (2500 kg/m³). To calculate the shockwave radius, we used a constant depending on the diameter of the asteroid (9 if D > 1000 or 3.5 if D < 1000) and the energy in megatons. For the seismic magnitude, we used the mathematical expression Ms = 0.67·log(Ek) - 5.87, which is measured on the Richter scale. Finally, for the thermal radius, we used a thermal constant equal to 3 and the energy in megatons.
+  </p>
+</section>
+            
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2025 Collision Course Project | NASA NEO Data | Powered by Flask & Cesium
+    </footer>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+
+    <script>
+        const container = document.getElementById('globe-container');
+
+        // Escena y cámara
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 2.5;
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Textura de la Tierra
+        const textureLoader = new THREE.TextureLoader();
+        const earthTexture = textureLoader.load('/static/world.jpg');
+
+        const geometry = new THREE.SphereGeometry(1, 512, 512);
+        const material = new THREE.MeshStandardMaterial({
+            map: earthTexture,
+            metalness: 0.2,
+            roughness: 0.3
+        });
+        const earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
+
+        // Iluminación
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        directionalLight.position.set(5, 3, 5);
+        scene.add(directionalLight);
+
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+        scene.add(hemiLight);
+
+        const backLight = new THREE.DirectionalLight(0xffffff, 0.2);
+        backLight.position.set(-5, -3, -5);
+        scene.add(backLight);
+
+        // Rotación al pasar el mouse
+        let rotate = false;
+        container.addEventListener('mouseenter', () => rotate = true);
+        container.addEventListener('mouseleave', () => rotate = false);
+
+        // Abrir simulador al hacer click en el globo (nueva pestaña)
+        container.addEventListener('click', () => {
+            window.open("/meteorito", "_blank");
+        });
+
+        // Animación
+        function animate() {
+            requestAnimationFrame(animate);
+            if (rotate) earth.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Ajuste al cambiar tamaño de ventana
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interactive Collision Simulator</title>
+  
+  <!-- Cesium -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+  <style>
+    html, body, #cesiumContainer { margin:0; padding:0; height:100%; width:100%; overflow:hidden; font-family: system-ui; }
+    #controlPanel {
+      position: absolute; top: 10px; left: 10px; z-index: 1000;
+      background: rgba(38,38,38,0.8); color: white;
+      padding: 10px 15px; border-radius: 8px; backdrop-filter: blur(5px);
+    }
+    #controlPanel form { display: flex; gap: 10px; align-items: center; }
+    #msg { margin-left: 10px; font-size: 12px; opacity: 0.9; }
+    #content {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 999;
+      max-height: 40vh; overflow-y: auto; background: rgba(20,20,20,0.7);
+      backdrop-filter: blur(5px); color: #eee;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid #444; padding: 8px 12px; text-align: left; }
+    th { background: rgba(0,0,0,0.3); font-weight: normal; color: #aaa; }
+    td { font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- Contenedor Cesium -->
+  <div id="cesiumContainer"></div>
+
+  <!-- Panel de Control -->
+  <div id="controlPanel">
+    <form id="meteorForm">
+      <label for="meteorList">Asteroid:</label>
+      <select id="meteorList" name="objeto">
+        <option value="1999 RQ36">101955 Bennu (1999 RQ36)</option>
+        <option value="Impactor 2025">Impactor 2025</option>
+        <option value="1950 DA">1950 DA</option>
+      </select>
+      <button type="button" id="simulateButton">Simulate collision</button>
+      <span id="msg">Click on the map to choose an impact point...</span>
+    </form>
+  </div>
+
+  <!-- Tabla de resultados -->
+  <section id="content">
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Value</th><th>Units</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Asteroid Diameter</td><td id="t_diam">-</td><td>m</td></tr>
+        <tr><td>Crater Diameter</td><td id="t_crater">-</td><td>km</td></tr>
+        <tr><td>Shockwave Radius (5psi)</td><td id="t_choque">-</td><td>km</td></tr>
+        <tr><td>Thermal Radiation Radius</td><td id="t_incendio">-</td><td>km</td></tr>
+        <tr><td>Seismic Magnitude</td><td id="t_sismo">-</td><td>Richter</td></tr>
+        <tr><td>Energy Released</td><td id="t_energia">-</td><td>Megatons</td></tr>
+        <tr><td>Deads on impact (aprox.)</td><td id="t_personas">-</td><td>People</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 🔑 Coloca el token antes de tu JS -->
+  <script>
+    Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0NjM0OTA0MC1hMDVmLTQ5YTktOGM1Ny0yOTk3ZWU3OTQ5ZDMiLCJpZCI6MzQ3MDAwLCJpYXQiOjE3NTk1NDMzMjB9.p82qf9O9wa7d8AB_A1LmYLgFhCuLG9tGfJmGt0J7Y9U";
+  </script>
+
+  <!-- Tu lógica -->
+  <script src="{{ url_for('static', filename='java.js') }}"></script>
+
+</body>
+</html>
