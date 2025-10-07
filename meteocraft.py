@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()  # carga .env en variables de entorno
 
 # --- Configuración ---
-SBDB_API_URL = os.getenv("API_KEY")
+SBDB_API_URL =  os.getenv("SBDB_API_URL", "https://ssd-api.jpl.nasa.gov/sbdb.api")
 dataset = rasterio.open("static/gpw_v4_population_density_rev11_2020_30_sec.tif")
 
 app = Flask(__name__)
@@ -161,4 +161,5 @@ def simulate():
     })
 
 if __name__ == "__main__":
+
     app.run(debug=True)
